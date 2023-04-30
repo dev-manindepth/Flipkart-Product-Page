@@ -1,4 +1,4 @@
-export const productJSON = [
+export let productJSON = [
   {
     title: "APPLE iPhone 11 (White, 64 GB)",
     image: {

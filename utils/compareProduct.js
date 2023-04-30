@@ -5,10 +5,18 @@ import {
 const productlist = document.querySelector(".product-list");
 
 const body = document.getElementsByTagName("body");
-
-export let selectedProducts = [];
-
 const [compareWidget, compareWidgetContainer] = createCompareWidget();
+export {compareItem,compareWidget,compareWidgetContainer}
+export let selectedProducts = [];
+if (localStorage.getItem("selectedProducts")) {
+  selectedProducts = JSON.parse(localStorage.getItem("selectedProducts"));
+}
+
+const firstScriptTag = document.getElementsByTagName("script")[0];
+document.body.insertBefore(compareWidget, firstScriptTag);
+compareWidgetContainer.innerHTML = "";
+
+
 
 // Using Event Delegation to attach a "change" event listener to the parent element of all the checkboxes
 productlist.addEventListener("change", (event) => {
@@ -25,11 +33,20 @@ productlist.addEventListener("change", (event) => {
         productName: productName,
         imgSrc: productImage,
       });
+      // Store the updated selectedProducts array in localStorage
+      localStorage.setItem(
+        "selectedProducts",
+        JSON.stringify(selectedProducts)
+      );
+      console.log(event.target);
     } else {
       selectedProducts = selectedProducts.filter(
         (product) => product.productName !== productName
       );
-
+      localStorage.setItem(
+        "selectedProducts",
+        JSON.stringify(selectedProducts)
+      );
       const compareItemElem = compareWidgetContainer.querySelector(
         `[alt="${productName}"]`
       );
@@ -38,7 +55,7 @@ productlist.addEventListener("change", (event) => {
       }
     }
 
-    const firstScriptTag = document.getElementsByTagName("script")[0];
+    // const firstScriptTag = document.getElementsByTagName("script")[0];
     document.body.insertBefore(compareWidget, firstScriptTag);
     const compareBtn = document.querySelector(".compare-btn");
     if (selectedProducts.length == 0) {
@@ -66,6 +83,7 @@ compareWidgetContainer.addEventListener("click", (event) => {
   selectedProducts = selectedProducts.filter((product) => {
     return product.productName !== productName;
   });
+  localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
   compareWidgetContainer.removeChild(product);
   const productlist = document.querySelector(".product-list");
   const checkbox = productlist.querySelector(
